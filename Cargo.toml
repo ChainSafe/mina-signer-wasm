@@ -1,0 +1,28 @@
+[package]
+name = "mina-signer-wasm"
+version = "0.1.0"
+
+edition = "2021"
+license = "MIT"
+
+publish = false
+
+[dependencies]
+mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "3bae9501e10c9c01eb965e7695ec715ad6672630"}
+o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "3bae9501e10c9c01eb965e7695ec715ad6672630"}
+
+js-sys = "0.3"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+getrandom = {version = "0.2", features = ["js"]}
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3"
+
+[lib]
+crate-type = ["cdylib"]
+
+[profile.release]
+opt-level = 's'
