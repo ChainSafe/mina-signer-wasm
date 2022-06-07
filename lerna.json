@@ -1,0 +1,7 @@
+{
+  "packages": [
+    "examples/integration_tests"
+  ],
+  "version": "5.1.4",
+  "npmClient": "yarn"
+}

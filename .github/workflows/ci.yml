@@ -26,10 +26,19 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
       - run: wasm-pack test --node --release --all-features
-      - run: wasm-pack build -t web -s hanabi1224 --out-name mina-signer-wasm
+      - name: js build and tests
+        run: |
+          lerna bootstrap
+          lerna run test
+      - run: wasm-pack build -t web -d pkg-web -s hanabi1224
+      - run: wasm-pack build -t nodejs -d pkg-node -s hanabi1224
       - uses: actions/upload-artifact@v3
-        if: matrix.os == 'ubuntu-latest'
         with:
-          name: npm-pkg
-          path: pkg/**/*
+          name: npm-pkg-web
+          path: pkg-web/**/*
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v3
+        with:
+          name: npm-pkg-node
+          path: pkg-node/**/*
           if-no-files-found: error

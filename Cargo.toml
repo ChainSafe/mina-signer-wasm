@@ -8,10 +8,22 @@ license = "MIT"
 publish = false
 
 [dependencies]
-mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "3bae9501e10c9c01eb965e7695ec715ad6672630"}
-o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "3bae9501e10c9c01eb965e7695ec715ad6672630"}
+# mina-signer = {git = "https://github.com/o1-labs/proof-systems", rev = "3bae9501e10c9c01eb965e7695ec715ad6672630"}
+# o1-utils = {git = "https://github.com/o1-labs/proof-systems", rev = "3bae9501e10c9c01eb965e7695ec715ad6672630"}
 
+mina-curves = {git = "https://github.com/hanabi1224/proof-systems", rev = "3076466d22763affda978303c68be956d92101d9"}
+mina-hasher = {git = "https://github.com/hanabi1224/proof-systems", rev = "3076466d22763affda978303c68be956d92101d9"}
+mina-signer = {git = "https://github.com/hanabi1224/proof-systems", rev = "3076466d22763affda978303c68be956d92101d9"}
+o1-utils = {git = "https://github.com/hanabi1224/proof-systems", rev = "3076466d22763affda978303c68be956d92101d9"}
+
+ark-ec = "0.3"
+ark-ff = "0.3"
+bs58 = {version = "0.4", features = ["check"]}
+derive_more = "0.99"
+hex = "0.4"
 js-sys = "0.3"
+num-bigint = "0.4"
+rand = "0.8"
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 
