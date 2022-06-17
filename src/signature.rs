@@ -1,8 +1,7 @@
-use std::str::FromStr;
-
 use crate::*;
 use ark_ff::BigInteger256;
 use num_bigint::BigUint;
+use std::str::FromStr;
 
 #[wasm_bindgen]
 extern "C" {
@@ -13,6 +12,17 @@ extern "C" {
 
     #[wasm_bindgen(method, getter)]
     pub fn scalar(this: &Signature) -> String;
+
+    pub type SignatureWrapper;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn string(this: &SignatureWrapper) -> String;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn signer(this: &SignatureWrapper) -> String;
+
+    #[wasm_bindgen(method, getter)]
+    pub fn signature(this: &SignatureWrapper) -> Signature;
 }
 
 #[wasm_bindgen(inline_js = r#"

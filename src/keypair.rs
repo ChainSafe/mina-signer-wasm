@@ -28,7 +28,7 @@ extern "C" {
         }
     "#)]
 extern "C" {
-    pub fn new_keypair(private_key: String, public_key: String) -> Keypair;
+    pub fn new_keypair(private_key: &str, public_key: &str) -> Keypair;
 }
 
 impl TryFrom<Keypair> for MinaKeypair {
@@ -60,6 +60,6 @@ impl From<MinaKeypair> for Keypair {
         let private_key = bs58::encode(private_key_bytes_le)
             .with_check_version(constants::PRIVATE_KEY_BASE58_CHECK_VERSION_BYTE)
             .into_string();
-        new_keypair(private_key, public_key)
+        new_keypair(private_key.as_str(), public_key.as_str())
     }
 }

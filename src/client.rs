@@ -66,7 +66,7 @@ impl Client {
     #[wasm_bindgen(js_name = publicKeyToRaw)]
     pub fn public_key_to_raw(&self, public_key: &str) -> Result<String, JsError> {
         let mut decoded = bs58::decode(public_key)
-            .with_check(Some(0xcb))
+            .with_check(Some(constants::PUBLIC_KEY_BASE58_CHECK_VERSION_BYTE))
             .into_vec()
             .map_err(map_js_err)?;
         if decoded.len() == 36 {
@@ -94,8 +94,58 @@ impl Client {
     }
 
     #[wasm_bindgen(js_name = verifyMessage)]
-    pub fn verify_message(&self, message: SignedMessage) -> Result<bool, JsError> {
-        self.client().verify_message(message)
+    pub fn verify_message(&self, signed_message: SignedMessage) -> Result<bool, JsError> {
+        self.client().verify_message(signed_message)
+    }
+
+    #[wasm_bindgen(js_name = signPayment)]
+    pub fn sign_payment(
+        &self,
+        payment: Payment,
+        private_key: String,
+    ) -> Result<SignedPayment, JsError> {
+        let client = self.client();
+        let keypair: MinaKeypair = new_keypair(
+            private_key.as_str(),
+            client.derive_public_key(private_key.clone())?.as_str(),
+        )
+        .try_into()?;
+        let signature = client.sign_payment(&payment.try_to_mina_payment()?, &keypair);
+        Ok(new_signed_payment(signature.into(), payment))
+    }
+
+    #[wasm_bindgen(js_name = verifyPayment)]
+    pub fn verify_payment(&self, signed_payment: SignedPayment) -> Result<bool, JsError> {
+        self.client().verify_payment(signed_payment)
+    }
+
+    #[wasm_bindgen(js_name = signStakeDelegation)]
+    pub fn sign_stake_delegation(
+        &self,
+        stake_delegation: StakeDelegation,
+        private_key: String,
+    ) -> Result<SignedStakeDelegation, JsError> {
+        let client = self.client();
+        let keypair: MinaKeypair = new_keypair(
+            private_key.as_str(),
+            client.derive_public_key(private_key.clone())?.as_str(),
+        )
+        .try_into()?;
+        let signature = client
+            .sign_stake_delegation(&stake_delegation.try_to_mina_stake_delegation()?, &keypair);
+        Ok(new_signed_stake_delegation(
+            signature.into(),
+            stake_delegation,
+        ))
+    }
+
+    #[wasm_bindgen(js_name = verifyStakeDelegation)]
+    pub fn verify_stake_delegation(
+        &self,
+        signed_stake_delegation: SignedStakeDelegation,
+    ) -> Result<bool, JsError> {
+        self.client()
+            .verify_stake_delegation(signed_stake_delegation)
     }
 }
 
@@ -131,16 +181,53 @@ impl ClientImpl {
     }
 
     pub fn sign_message(&self, message: String, keypair: &MinaKeypair) -> MinaSignature {
-        let mut ctx = mina_signer::create_legacy::<StringMessage>(self.network_id());
-        ctx.sign(keypair, &message.into())
+        let message: StringMessage = message.into();
+        let mut ctx = mina_signer::create_legacy(self.network_id());
+        ctx.sign(keypair, &message)
     }
 
-    pub fn verify_message(&self, message: SignedMessage) -> Result<bool, JsError> {
-        let signature: MinaSignature = message.signature_wrapper().signature().try_into()?;
-        let data = message.data();
+    pub fn verify_message(&self, signed_message: SignedMessage) -> Result<bool, JsError> {
+        let signature: MinaSignature = signed_message.signature().signature().try_into()?;
+        let data = signed_message.data();
         let public_key = PubKey::from_address(data.public_key().as_str()).map_err(map_js_err)?;
         let payload: StringMessage = data.message().into();
-        let mut ctx = mina_signer::create_legacy::<StringMessage>(self.network_id());
+        let mut ctx = mina_signer::create_legacy(self.network_id());
+        Ok(ctx.verify(&signature, &public_key, &payload))
+    }
+
+    pub fn sign_payment(&self, payment: &MinaPayment, keypair: &MinaKeypair) -> MinaSignature {
+        let mut ctx = mina_signer::create_legacy(self.network_id());
+        ctx.sign(keypair, payment)
+    }
+
+    pub fn verify_payment(&self, signed_payment: SignedPayment) -> Result<bool, JsError> {
+        let signature: MinaSignature = signed_payment.signature().try_into()?;
+        let payment = signed_payment.data();
+        let public_key = PubKey::from_address(payment.from().as_str()).map_err(map_js_err)?;
+        let payload: MinaPayment = payment.try_into()?;
+        let mut ctx = mina_signer::create_legacy(self.network_id());
+        Ok(ctx.verify(&signature, &public_key, &payload))
+    }
+
+    pub fn sign_stake_delegation(
+        &self,
+        stake_delegation: &MinaStakeDelegation,
+        keypair: &MinaKeypair,
+    ) -> MinaSignature {
+        let mut ctx = mina_signer::create_legacy(self.network_id());
+        ctx.sign(keypair, stake_delegation)
+    }
+
+    pub fn verify_stake_delegation(
+        &self,
+        signed_stake_delegation: SignedStakeDelegation,
+    ) -> Result<bool, JsError> {
+        let signature: MinaSignature = signed_stake_delegation.signature().try_into()?;
+        let stake_delegation = signed_stake_delegation.data();
+        let public_key =
+            PubKey::from_address(stake_delegation.from().as_str()).map_err(map_js_err)?;
+        let payload: MinaStakeDelegation = stake_delegation.try_into()?;
+        let mut ctx = mina_signer::create_legacy(self.network_id());
         Ok(ctx.verify(&signature, &public_key, &payload))
     }
 

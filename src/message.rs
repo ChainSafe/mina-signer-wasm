@@ -1,8 +1,7 @@
+use crate::*;
 use derive_more::{From, Into};
 use mina_hasher::{Hashable, ROInput};
 use mina_signer::NetworkId;
-
-use crate::*;
 
 #[wasm_bindgen]
 extern "C" {
@@ -16,19 +15,8 @@ extern "C" {
 
     pub type SignedMessage;
 
-    pub type SignatureWrapper;
-
     #[wasm_bindgen(method, getter)]
-    pub fn string(this: &SignatureWrapper) -> String;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn signer(this: &SignatureWrapper) -> String;
-
-    #[wasm_bindgen(method, getter)]
-    pub fn signature(this: &SignatureWrapper) -> Signature;
-
-    #[wasm_bindgen(method, getter, js_name = signature)]
-    pub fn signature_wrapper(this: &SignedMessage) -> SignatureWrapper;
+    pub fn signature(this: &SignedMessage) -> SignatureWrapper;
 
     #[wasm_bindgen(method, getter)]
     pub fn data(this: &SignedMessage) -> Message;
