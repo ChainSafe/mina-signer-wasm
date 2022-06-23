@@ -60,47 +60,34 @@ yarn test
 yarn benchmark
 ```
 
-## Benchmark result
+## Benchmark result from CI job
 ```
-    [js]   genKeys x 575 ops/sec ±5.12% (73 runs sampled)
-    [wasm] genKeys x 2,682 ops/sec ±3.32% (87 runs sampled)
-
-    [js]   verifyKeypair x 31.69 ops/sec ±4.66% (55 runs sampled)
-    [wasm] verifyKeypair x 2,785 ops/sec ±2.25% (87 runs sampled)
-
-    [js]   derivePublicKey x 877 ops/sec ±3.20% (83 runs sampled)
-    [wasm] derivePublicKey x 3,209 ops/sec ±2.01% (86 runs sampled)
-
-    [js]   publicKeyToRaw x 1,564 ops/sec ±2.38% (87 runs sampled)
-    [wasm] publicKeyToRaw x 206,306 ops/sec ±3.22% (78 runs sampled)
-
-    [js]   signMessage x 102 ops/sec ±1.92% (75 runs sampled)
-    [wasm] signMessage x 172 ops/sec ±1.92% (79 runs sampled)
-
-    [js]   verifyMessage x 142 ops/sec ±3.63% (73 runs sampled)
-    [wasm] verifyMessage x 161 ops/sec ±2.52% (82 runs sampled)
-
-    [js]   signPayment x 54.27 ops/sec ±2.53% (64 runs sampled)
-    [wasm] signPayment x 150 ops/sec ±2.06% (85 runs sampled)
-
-    [js]   verifyPayment x 66.60 ops/sec ±2.62% (69 runs sampled)
-    [wasm] verifyPayment x 149 ops/sec ±2.79% (84 runs sampled)
-
-    [js]   signStateDelegation x 52.87 ops/sec ±4.26% (64 runs sampled)
-    [wasm] signStateDelegation x 155 ops/sec ±0.87% (78 runs sampled)
-
-    [js]   verifyStateDelegation x 64.04 ops/sec ±3.90% (66 runs sampled)
-    [wasm] verifyStateDelegation x 146 ops/sec ±2.79% (80 runs sampled)
-
-    [js]   hashPayment x 4.78 ops/sec ±1.84% (16 runs sampled)
-    [wasm] hashPayment x 4,295 ops/sec ±3.16% (87 runs sampled)
-
-    [js]   hashStakeDelegation x 4.82 ops/sec ±2.99% (16 runs sampled)
-    [wasm] hashStakeDelegation x 4,546 ops/sec ±1.24% (88 runs sampled)
-
-    [js]   signedRosettaTransactionToSignedCommand - Payment x 139 ops/sec ±1.85% (80 runs sampled)
-    [wasm] signedRosettaTransactionToSignedCommand - Payment x 6,485 ops/sec ±0.82% (94 runs sampled)
-
-    [js]   signedRosettaTransactionToSignedCommand - StakeDelegation x 135 ops/sec ±1.89% (76 runs sampled)
-    [wasm] signedRosettaTransactionToSignedCommand - StakeDelegation x 6,135 ops/sec ±2.62% (89 runs sampled)
+integration_tests: [js]   genKeys x 11.77 ops/sec ±1.43% (33 runs sampled)
+integration_tests: [wasm] genKeys x 1,361 ops/sec ±1.01% (86 runs sampled)
+integration_tests: [js]   verifyKeypair x 1.65 ops/sec ±2.33% (9 runs sampled)
+integration_tests: [wasm] verifyKeypair x 1,336 ops/sec ±1.39% (86 runs sampled)
+integration_tests: [js]   derivePublicKey x 12.51 ops/sec ±1.34% (35 runs sampled)
+integration_tests: [wasm] derivePublicKey x 1,595 ops/sec ±0.98% (89 runs sampled)
+integration_tests: [js]   publicKeyToRaw x 39.21 ops/sec ±1.24% (51 runs sampled)
+integration_tests: [wasm] publicKeyToRaw x 9,990 ops/sec ±0.88% (90 runs sampled)
+integration_tests: [js]   signMessage x 3.54 ops/sec ±2.20% (13 runs sampled)
+integration_tests: [wasm] signMessage x 84.88 ops/sec ±0.75% (71 runs sampled)
+integration_tests: [js]   verifyMessage x 4.64 ops/sec ±1.81% (16 runs sampled)
+integration_tests: [wasm] verifyMessage x 85.21 ops/sec ±1.08% (72 runs sampled)
+integration_tests: [js]   signPayment x 2.61 ops/sec ±0.88% (11 runs sampled)
+integration_tests: [wasm] signPayment x 75.53 ops/sec ±1.16% (65 runs sampled)
+integration_tests: [js]   verifyPayment x 3.35 ops/sec ±1.96% (13 runs sampled)
+integration_tests: [wasm] verifyPayment x 77.71 ops/sec ±0.79% (66 runs sampled)
+integration_tests: [js]   signStateDelegation x 2.68 ops/sec ±2.18% (11 runs sampled)
+integration_tests: [wasm] signStateDelegation x 74.94 ops/sec ±1.29% (66 runs sampled)
+integration_tests: [js]   verifyStateDelegation x 3.24 ops/sec ±1.79% (13 runs sampled)
+integration_tests: [wasm] verifyStateDelegation x 76.39 ops/sec ±0.97% (77 runs sampled)
+integration_tests: [js]   hashPayment x 19.74 ops/sec ±0.98% (36 runs sampled)
+integration_tests: [wasm] hashPayment x 2,637 ops/sec ±0.79% (91 runs sampled)
+integration_tests: [js]   hashStakeDelegation x 19.54 ops/sec ±1.33% (36 runs sampled)
+integration_tests: [wasm] hashStakeDelegation x 2,688 ops/sec ±0.93% (91 runs sampled)
+integration_tests: [js]   signedRosettaTransactionToSignedCommand - Payment x 67.08 ops/sec ±1.38% (68 runs sampled)
+integration_tests: [wasm] signedRosettaTransactionToSignedCommand - Payment x 3,359 ops/sec ±0.93% (91 runs sampled)
+integration_tests: [js]   signedRosettaTransactionToSignedCommand - StakeDelegation x 65.48 ops/sec ±0.97% (67 runs sampled)
+integration_tests: [wasm] signedRosettaTransactionToSignedCommand - StakeDelegation x 3,348 ops/sec ±1.15% (88 runs sampled)
 ```
