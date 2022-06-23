@@ -170,6 +170,19 @@ impl Client {
         self.client()
             .hash_signed_command_json(signed_stake_delegation.data().try_into()?)
     }
+
+    #[wasm_bindgen(js_name = signedRosettaTransactionToSignedCommand)]
+    pub fn signed_rosetta_transaction_to_signed_command(
+        &self,
+        signed_rosetta_transaction: String,
+    ) -> Result<String, JsError> {
+        let json = SignedCommandGraphQLJson {
+            data: self
+                .client()
+                .signed_rosetta_transaction_to_signed_command(signed_rosetta_transaction)?,
+        };
+        serde_json::to_string(&json).map_err(map_js_err)
+    }
 }
 
 pub struct ClientImpl {
@@ -270,6 +283,43 @@ impl ClientImpl {
         hash.insert(0, hash.len() as u8);
         hash.insert(0, 1);
         Ok(bs58::encode(hash).with_check_version(0x12).into_string())
+    }
+
+    pub fn signed_rosetta_transaction_to_signed_command(
+        &self,
+        signed_rosetta_transaction: String,
+    ) -> Result<SignedCommandJson, JsError> {
+        if let Some(signed_rosetta_transaction) =
+            signed_rosetta_transaction_from_str(signed_rosetta_transaction)
+        {
+            let signature = signed_rosetta_transaction.signature();
+            let mut sig_field_bytes =
+                hex::decode(&signature[..(signature.len() / 2)]).map_err(map_js_err)?;
+            sig_field_bytes.reverse();
+            let rx = <CurvePoint as AffineCurve>::BaseField::from_bytes(&sig_field_bytes[..])
+                .map_err(map_js_err)?;
+            let mut sig_scalar_bytes =
+                hex::decode(&signature[(signature.len() / 2)..]).map_err(map_js_err)?;
+            sig_scalar_bytes.reverse();
+            let s = <CurvePoint as AffineCurve>::ScalarField::from_bytes(&sig_scalar_bytes[..])
+                .map_err(map_js_err)?;
+            let signature = MinaSignature { rx, s };
+            let mut cmd: SignedCommandJson = if let Some(payment) =
+                signed_rosetta_transaction.payment()
+            {
+                payment.try_into()?
+            } else if let Some(stake_delegation) = signed_rosetta_transaction.stake_delegation() {
+                stake_delegation.try_into()?
+            } else {
+                return Err(JsError::new(
+                    "Either payment or stake_delegation should be set",
+                ));
+            };
+            cmd.signature = signature_to_json(signature);
+            Ok(cmd)
+        } else {
+            Err(JsError::new("Failed"))
+        }
     }
 
     fn network_id(&self) -> NetworkId {

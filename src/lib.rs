@@ -18,6 +18,9 @@ pub use stake_delegation::*;
 mod signature;
 pub use signature::*;
 
+mod rosetta;
+use rosetta::*;
+
 mod constants;
 
 mod utils;

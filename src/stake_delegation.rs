@@ -20,13 +20,13 @@ extern "C" {
     pub fn fee(this: &StakeDelegation) -> JsValue;
 
     #[wasm_bindgen(method, getter)]
-    pub fn nonce(this: &StakeDelegation) -> u32;
+    pub fn nonce(this: &StakeDelegation) -> JsValue;
 
     #[wasm_bindgen(method, getter)]
     pub fn memo(this: &StakeDelegation) -> Option<String>;
 
     #[wasm_bindgen(method, getter, js_name = validUntil)]
-    pub fn valid_until(this: &StakeDelegation) -> Option<u32>;
+    pub fn valid_until(this: &StakeDelegation) -> JsValue;
 
     pub type SignedStakeDelegation;
 
@@ -35,6 +35,44 @@ extern "C" {
 
     #[wasm_bindgen(method, getter)]
     pub fn data(this: &SignedStakeDelegation) -> StakeDelegation;
+}
+
+impl StakeDelegation {
+    pub fn fee_u64(&self) -> Result<u64, JsError> {
+        js_to_string(&self.fee()).parse().map_err(map_js_err)
+    }
+
+    pub fn nonce_u32(&self) -> Result<u32, JsError> {
+        js_to_string(&self.nonce()).parse().map_err(map_js_err)
+    }
+
+    pub fn valid_until_u32(&self) -> Result<Option<u32>, JsError> {
+        let valid_until = self.valid_until();
+        if valid_until.is_null() || valid_until.is_undefined() {
+            Ok(None)
+        } else {
+            let s = js_to_string(&valid_until);
+            if s.is_empty() {
+                Ok(None)
+            } else {
+                Ok(Some(s.parse().map_err(map_js_err)?))
+            }
+        }
+    }
+
+    pub fn try_to_mina_stake_delegation(&self) -> Result<MinaStakeDelegation, JsError> {
+        Ok(MinaStakeDelegation {
+            to: CompressedPubKey::from_address(self.to().as_str()).map_err(map_js_err)?,
+            from: CompressedPubKey::from_address(self.from().as_str()).map_err(map_js_err)?,
+            fee: self.fee_u64()?,
+            nonce: self.nonce_u32()?,
+            memo: string_to_memo(self.memo()),
+            valid_until: match self.valid_until_u32()? {
+                None => u32::max_value(),
+                Some(i) => i,
+            },
+        })
+    }
 }
 
 #[wasm_bindgen(inline_js = r#"
@@ -74,22 +112,6 @@ extern "C" {
         signature: Signature,
         data: StakeDelegation,
     ) -> SignedStakeDelegation;
-}
-
-impl StakeDelegation {
-    pub fn try_to_mina_stake_delegation(&self) -> Result<MinaStakeDelegation, JsError> {
-        Ok(MinaStakeDelegation {
-            to: CompressedPubKey::from_address(self.to().as_str()).map_err(map_js_err)?,
-            from: CompressedPubKey::from_address(self.from().as_str()).map_err(map_js_err)?,
-            fee: js_to_string(&self.fee()).parse().map_err(map_js_err)?,
-            nonce: self.nonce(),
-            memo: string_to_memo(self.memo()),
-            valid_until: match self.valid_until() {
-                None => u32::max_value(),
-                Some(i) => i,
-            },
-        })
-    }
 }
 
 #[derive(Debug, Clone)]
@@ -132,16 +154,13 @@ impl TryFrom<StakeDelegation> for MinaStakeDelegation {
     }
 }
 
-impl TryFrom<StakeDelegation> for SignedCommandJson {
-    type Error = JsError;
-
-    fn try_from(v: StakeDelegation) -> Result<Self, Self::Error> {
-        let p: MinaStakeDelegation = v.try_into()?;
+impl From<MinaStakeDelegation> for SignedCommandJson {
+    fn from(p: MinaStakeDelegation) -> Self {
         let dummy_signature = MinaSignature {
             rx: <CurvePoint as AffineCurve>::BaseField::one(),
             s: <CurvePoint as AffineCurve>::ScalarField::one(),
         };
-        Ok(Self {
+        Self {
             payload: SignedCommandPayloadJson {
                 common: SignedCommandPayloadCommonJson {
                     fee: DecimalJson(p.fee),
@@ -160,7 +179,16 @@ impl TryFrom<StakeDelegation> for SignedCommandJson {
             },
             signer: compressed_pubkey_to_json(p.from),
             signature: signature_to_json(dummy_signature),
-        })
+        }
+    }
+}
+
+impl TryFrom<StakeDelegation> for SignedCommandJson {
+    type Error = JsError;
+
+    fn try_from(v: StakeDelegation) -> Result<Self, Self::Error> {
+        let p: MinaStakeDelegation = v.try_into()?;
+        Ok(p.into())
     }
 }
 

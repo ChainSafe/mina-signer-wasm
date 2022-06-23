@@ -3,23 +3,27 @@
 [![CI](https://github.com/hanabi1224/mina-signer-wasm/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/hanabi1224/mina-signer-wasm/actions/workflows/ci.yml)
 [![dependency status](https://deps.rs/repo/github/hanabi1224/mina-signer-wasm/status.svg?style=flat-square)](https://deps.rs/repo/github/hanabi1224/mina-signer-wasm)
 
-This library is a drop-in replacement of [mina-signer](https://www.npmjs.com/package/mina-signer/v/1.1.0), APIs are compatable with [mina-signer 1.1.0](https://www.npmjs.com/package/mina-signer/v/1.1.0)
+This library is a drop-in replacement of [mina-signer](https://www.npmjs.com/package/mina-signer/v/1.1.0), APIs are compatable with [mina-signer v1.1.0](https://www.npmjs.com/package/mina-signer/v/1.1.0)
 
 ## API list
 
-- [x] genKeys
-- [x] verifyKeypair
-- [x] derivePublicKey
-- [x] signMessage
-- [x] verifyMessage
-- [x] signPayment
-- [x] verifyPayment
-- [x] signStakeDelegation
-- [x] verifyStakeDelegation
-- [x] hashPayment
-- [x] hashStakeDelegation
-- [ ] signedRosettaTransactionToSignedCommand
-- [x] publicKeyToRaw
+- [x] `genKeys`
+- [x] `verifyKeypair`
+- [x] `derivePublicKey`
+- [x] `signMessage`
+- [x] `verifyMessage`
+- [x] `signPayment`
+- [x] `verifyPayment`
+- [x] `signStakeDelegation`
+- [x] `verifyStakeDelegation`
+- [x] `hashPayment`
+- [x] `hashStakeDelegation`
+- [x] `signedRosettaTransactionToSignedCommand`
+- [x] `publicKeyToRaw`
+- [x] `publicKeyToRawBeta` (this API is compatable with `publicKeyToRaw` in [mina-signer v1.2.0](https://www.npmjs.com/package/mina-signer/v/1.2.0))
+
+## Unpacked size
+< 0.5MB, while `mina-signer` v1.1.0 is > 3MB and `mina-signer` v1.2.0 is > 40MB
 
 ## Prerequisites
 
@@ -27,6 +31,26 @@ This library is a drop-in replacement of [mina-signer](https://www.npmjs.com/pac
 - [yarn (v1)](https://classic.yarnpkg.com/)
 - [rust (stable)](https://rustup.rs/)
 - [wasm-pack (latest)](https://rustwasm.github.io/wasm-pack/)
+
+## Build
+
+to generate server side npm package
+```bash
+wasm-pack build -t nodejs -d pkg-node
+```
+
+to generate browser side npm package
+```bash
+wasm-pack build -t web -d pkg-web
+```
+
+## Usage
+
+```
+// const Client = require("mina-signer");
+// is equivalent to 
+const Client = require("./pkg-node/mina_signer_wasm").Client
+```
 
 ## Integration tests and benchmarks
 ```bash
@@ -73,4 +97,10 @@ yarn benchmark
 
     [js]   hashStakeDelegation x 4.82 ops/sec ±2.99% (16 runs sampled)
     [wasm] hashStakeDelegation x 4,546 ops/sec ±1.24% (88 runs sampled)
+
+    [js]   signedRosettaTransactionToSignedCommand - Payment x 139 ops/sec ±1.85% (80 runs sampled)
+    [wasm] signedRosettaTransactionToSignedCommand - Payment x 6,485 ops/sec ±0.82% (94 runs sampled)
+
+    [js]   signedRosettaTransactionToSignedCommand - StakeDelegation x 135 ops/sec ±1.89% (76 runs sampled)
+    [wasm] signedRosettaTransactionToSignedCommand - StakeDelegation x 6,135 ops/sec ±2.62% (89 runs sampled)
 ```
