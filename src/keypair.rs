@@ -2,7 +2,6 @@ use crate::*;
 use ark_ec::AffineCurve;
 use mina_curves::pasta::pallas::Affine as CurvePoint;
 use mina_signer::PubKey;
-use o1_utils::field_helpers::FieldHelpers;
 
 #[wasm_bindgen]
 extern "C" {

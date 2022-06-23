@@ -26,10 +26,9 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
       - run: wasm-pack test --node --release --all-features
-      - name: js build, tests and benchmarks
-        run: |
-          lerna bootstrap
-          lerna run test --stream
+      - run: lerna bootstrap
+      - run: lerna run test --stream
+      - run: lerna run benchmark --stream
       - run: wasm-pack build -t web -d pkg-web -s hanabi1224
       - run: wasm-pack build -t nodejs -d pkg-node -s hanabi1224
       - uses: actions/upload-artifact@v3

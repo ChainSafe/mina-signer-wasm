@@ -1,8 +1,9 @@
 use crate::*;
-use ark_ec::AffineCurve;
-use mina_curves::pasta::pallas::Affine as CurvePoint;
+use ark_ff::PrimeField;
+use blake2::digest::VariableOutput;
+use mina_serialization_types::{json::*, v1::*};
 use mina_signer::{NetworkId, PubKey, Signer};
-use o1_utils::field_helpers::FieldHelpers;
+use std::io::Write;
 
 #[wasm_bindgen]
 extern "C" {
@@ -65,6 +66,13 @@ impl Client {
 
     #[wasm_bindgen(js_name = publicKeyToRaw)]
     pub fn public_key_to_raw(&self, public_key: &str) -> Result<String, JsError> {
+        let pk = PubKey::from_address(public_key).map_err(map_js_err)?;
+        let point = pk.into_point();
+        Ok(format!("{}{}", point.x.into_repr(), point.y.into_repr(),))
+    }
+
+    #[wasm_bindgen(js_name = publicKeyToRawBeta)]
+    pub fn public_key_to_raw_beta(&self, public_key: &str) -> Result<String, JsError> {
         let mut decoded = bs58::decode(public_key)
             .with_check(Some(constants::PUBLIC_KEY_BASE58_CHECK_VERSION_BYTE))
             .into_vec()
@@ -146,6 +154,21 @@ impl Client {
     ) -> Result<bool, JsError> {
         self.client()
             .verify_stake_delegation(signed_stake_delegation)
+    }
+
+    #[wasm_bindgen(js_name = hashPayment)]
+    pub fn hash_payment(&self, signed_payment: SignedPayment) -> Result<String, JsError> {
+        self.client()
+            .hash_signed_command_json(signed_payment.data().try_into()?)
+    }
+
+    #[wasm_bindgen(js_name = hashStakeDelegation)]
+    pub fn hash_stake_delegation(
+        &self,
+        signed_stake_delegation: SignedStakeDelegation,
+    ) -> Result<String, JsError> {
+        self.client()
+            .hash_signed_command_json(signed_stake_delegation.data().try_into()?)
     }
 }
 
@@ -229,6 +252,24 @@ impl ClientImpl {
         let payload: MinaStakeDelegation = stake_delegation.try_into()?;
         let mut ctx = mina_signer::create_legacy(self.network_id());
         Ok(ctx.verify(&signature, &public_key, &payload))
+    }
+
+    pub fn hash_signed_command_json(
+        &self,
+        signed_command_json: SignedCommandJson,
+    ) -> Result<String, JsError> {
+        let v1: SignedCommandV1 = signed_command_json.into();
+        let mut binprot_bytes = Vec::new();
+        bin_prot::to_writer(&mut binprot_bytes, &v1).map_err(map_js_err)?;
+        let binprot_bytes_bs58 = bs58::encode(&binprot_bytes[..])
+            .with_check_version(0x13)
+            .into_string();
+        let mut hasher = blake2::Blake2bVar::new(32).unwrap();
+        hasher.write_all(binprot_bytes_bs58.as_bytes()).unwrap();
+        let mut hash = hasher.finalize_boxed().to_vec();
+        hash.insert(0, hash.len() as u8);
+        hash.insert(0, 1);
+        Ok(bs58::encode(hash).with_check_version(0x12).into_string())
     }
 
     fn network_id(&self) -> NetworkId {

@@ -3,14 +3,7 @@
 [![CI](https://github.com/hanabi1224/mina-signer-wasm/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/hanabi1224/mina-signer-wasm/actions/workflows/ci.yml)
 [![dependency status](https://deps.rs/repo/github/hanabi1224/mina-signer-wasm/status.svg?style=flat-square)](https://deps.rs/repo/github/hanabi1224/mina-signer-wasm)
 
-This library is a drop-in replacement of [mina-signer](https://www.npmjs.com/package/mina-signer/v/1.2.0), APIs are compatable with [mina-signer 1.2.0](https://www.npmjs.com/package/mina-signer/v/1.2.0)
-
-## Integration tests and benchmarks
-```bash
-cd examples/integration_tests
-yarn
-yarn test
-```
+This library is a drop-in replacement of [mina-signer](https://www.npmjs.com/package/mina-signer/v/1.1.0), APIs are compatable with [mina-signer 1.1.0](https://www.npmjs.com/package/mina-signer/v/1.1.0)
 
 ## API list
 
@@ -23,10 +16,25 @@ yarn test
 - [x] verifyPayment
 - [x] signStakeDelegation
 - [x] verifyStakeDelegation
-- [ ] hashPayment
-- [ ] hashStakeDelegation
+- [x] hashPayment
+- [x] hashStakeDelegation
 - [ ] signedRosettaTransactionToSignedCommand
 - [x] publicKeyToRaw
+
+## Prerequisites
+
+- [node (lts)](https://nodejs.org/en/download/)
+- [yarn (v1)](https://classic.yarnpkg.com/)
+- [rust (stable)](https://rustup.rs/)
+- [wasm-pack (latest)](https://rustwasm.github.io/wasm-pack/)
+
+## Integration tests and benchmarks
+```bash
+cd examples/integration_tests
+yarn
+yarn test
+yarn benchmark
+```
 
 ## Benchmark result
 ```
@@ -59,4 +67,10 @@ yarn test
 
     [js]   verifyStateDelegation x 64.04 ops/sec ±3.90% (66 runs sampled)
     [wasm] verifyStateDelegation x 146 ops/sec ±2.79% (80 runs sampled)
+
+    [js]   hashPayment x 4.78 ops/sec ±1.84% (16 runs sampled)
+    [wasm] hashPayment x 4,295 ops/sec ±3.16% (87 runs sampled)
+
+    [js]   hashStakeDelegation x 4.82 ops/sec ±2.99% (16 runs sampled)
+    [wasm] hashStakeDelegation x 4,546 ops/sec ±1.24% (88 runs sampled)
 ```

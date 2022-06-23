@@ -1,6 +1,8 @@
 use crate::*;
 use mina_hasher::{Hashable, ROInput};
+use mina_serialization_types::{common::*, json::*};
 use mina_signer::{CompressedPubKey, NetworkId};
+use num_traits::identities::One;
 
 #[wasm_bindgen]
 extern "C" {
@@ -80,20 +82,13 @@ extern "C" {
 
 impl Payment {
     pub fn try_to_mina_payment(&self) -> Result<MinaPayment, JsError> {
-        let mut memo = [0; constants::MEMO_BYTES];
-        if let Some(s) = self.memo() {
-            for (i, &b) in s.as_bytes().iter().enumerate() {
-                memo[i] = b;
-            }
-        }
-
         Ok(MinaPayment {
             to: CompressedPubKey::from_address(self.to().as_str()).map_err(map_js_err)?,
             from: CompressedPubKey::from_address(self.from().as_str()).map_err(map_js_err)?,
-            fee: self.fee().as_f64().unwrap_or_default() as u64,
-            amount: self.amount().as_f64().unwrap_or_default() as u64,
+            fee: js_to_string(&self.fee()).parse().map_err(map_js_err)?,
+            amount: js_to_string(&self.amount()).parse().map_err(map_js_err)?,
             nonce: self.nonce(),
-            memo,
+            memo: string_to_memo(self.memo()),
             valid_until: match self.valid_until() {
                 None => u32::max_value(),
                 Some(i) => i,
@@ -141,6 +136,48 @@ impl TryFrom<Payment> for MinaPayment {
 
     fn try_from(v: Payment) -> Result<Self, Self::Error> {
         v.try_to_mina_payment()
+    }
+}
+
+impl TryFrom<Payment> for SignedCommandJson {
+    type Error = JsError;
+
+    fn try_from(v: Payment) -> Result<Self, Self::Error> {
+        let p: MinaPayment = v.try_into()?;
+        let dummy_signature = MinaSignature {
+            rx: <CurvePoint as AffineCurve>::BaseField::one(),
+            s: <CurvePoint as AffineCurve>::ScalarField::one(),
+        };
+        Ok(Self {
+            payload: SignedCommandPayloadJson {
+                common: SignedCommandPayloadCommonJson {
+                    fee: DecimalJson(p.fee),
+                    fee_token: U64Json(1),
+                    nonce: U32Json(p.nonce),
+                    valid_until: U32Json(p.valid_until),
+                    fee_payer_pk: compressed_pubkey_to_json(p.from),
+                    memo: SignedCommandMemoJson(p.memo.to_vec()),
+                },
+                body: SignedCommandPayloadBodyJson::PaymentPayload(PaymentPayloadJson {
+                    source_pk: compressed_pubkey_to_json(p.from),
+                    receiver_pk: compressed_pubkey_to_json(p.to),
+                    token_id: U64Json(1),
+                    amount: U64Json(p.amount),
+                }),
+            },
+            signer: compressed_pubkey_to_json(p.from),
+            signature: signature_to_json(dummy_signature),
+        })
+    }
+}
+
+impl TryFrom<SignedPayment> for SignedCommandJson {
+    type Error = JsError;
+
+    fn try_from(v: SignedPayment) -> Result<Self, Self::Error> {
+        let mut result: Self = v.data().try_into()?;
+        result.signature = signature_to_json(v.signature().try_into()?);
+        Ok(result)
     }
 }
 

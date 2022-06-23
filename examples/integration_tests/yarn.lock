@@ -971,11 +971,6 @@ emoji-regex@^8.0.0:
   resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-8.0.0.tgz#e818fd69ce5ccfcb404594f842963bf53164cc37"
   integrity sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A==
 
-env@^0.0.2:
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/env/-/env-0.0.2.tgz#50c19f307b129a45845b6b686df5b39dd40d1cf0"
-  integrity sha512-yP8LfjO4ughSHD/3HgLPinWzexmaOGvRfs2TFx0SZhOm7j1xPi9evjuGcLiNVHIGLmcsgMak4eDbBzlYqGIVxw==
-
 error-ex@^1.3.1:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/error-ex/-/error-ex-1.3.2.tgz#b4ac40648107fdcdcfae242f428bea8a14d4f1bf"
@@ -1735,13 +1730,12 @@ mimic-fn@^2.1.0:
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-2.1.0.tgz#7ed2c2ccccaf84d3ffcb7a69b57711fc2083401b"
   integrity sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
 
-mina-signer@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/mina-signer/-/mina-signer-1.2.0.tgz#ec3709bab851b694c4a920b7e7a365ec8c9b3d09"
-  integrity sha512-AQiWrZUU/1iWT/KZVtexsV2Qb0Wcs3QAsJDrbNXM5Q2SIsX+tRI8q43QrQVmq+Ti3VXNTA/sNMVj58Fyp4FEsA==
+mina-signer@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/mina-signer/-/mina-signer-1.1.0.tgz#b8271fd31a0f16379b563a26924a0726f4e473b3"
+  integrity sha512-bQtJBX/GtWVyHGC+aJShLas4psxeyRCQXnT8NX5EWr+s/808DqREBSILjKOPewglE5fHeQmjQu3biAO08k6giw==
   dependencies:
     "@types/node" "^13.7.0"
-    env "^0.0.2"
 
 minimatch@^3.0.4, minimatch@^3.1.1:
   version "3.1.2"

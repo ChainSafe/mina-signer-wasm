@@ -24,3 +24,7 @@ mod utils;
 use utils::*;
 
 use mina_signer::{Keypair as MinaKeypair, Signature as MinaSignature};
+
+use ark_ec::AffineCurve;
+use mina_curves::pasta::pallas::Affine as CurvePoint;
+use o1_utils::FieldHelpers;

@@ -6,10 +6,11 @@
   "scripts": {
     "build:wasm": "wasm-pack build -t nodejs -d examples/integration_tests/pkg ../../",
     "jest": "jest",
-    "test": "yarn build:wasm && yarn jest"
+    "test": "yarn build:wasm && yarn jest",
+    "benchmark": "yarn build:wasm && node benchmark.js"
   },
   "dependencies": {
-    "mina-signer": "^1.2.0"
+    "mina-signer": "^1.1.0"
   },
   "devDependencies": {
     "@types/jest": "^28.1.1",

@@ -5,8 +5,6 @@ const ClientWasm = wasm.Client
 const clientJs = new ClientJs({ network: "mainnet" });
 const clientWasm = new ClientWasm({ network: "mainnet" });
 
-const Benchmark = require('benchmark');
-
 test("genKeys", () => {
     const keypair = clientWasm.genKeys();
     expect(clientWasm.verifyKeypair(keypair))
@@ -90,110 +88,31 @@ test("signStakeDelegation and verifyStakeDelegation", () => {
     expect(clientWasm.verifyStakeDelegation(signedStakeDelegationWasm));
 });
 
-test("benchmarks", () => {
-    const keypair = clientJs.genKeys();
-    const message = "This is a sample message."
-    const signedMessage = clientWasm.signMessage(message, keypair);
-
-    const fromKeypair = clientWasm.genKeys();
-    const toKeypair = clientWasm.genKeys();
+test("hashPayment", () => {
+    // From block mainnet-117896-3NKjZ5fjms6BMaH4aq7DopPGyMY7PbG6vhRsX5XnYRxih8i9G7dj
     const payment = {
-        to: toKeypair.publicKey,
-        from: fromKeypair.publicKey,
-        // fee(u64) can be either f64 or bigint
-        fee: 1n,
-        // amount(u64) can be either f64 or bigint
-        amount: 2,
-        nonce: 3,
-        memo: 'memo',
-        validUntil: 0xFFFFFFFF,
+        to: 'B62qnsHmPQpZSKnrp978ZHFYwCJFBZtY1qE3UD97dd7taQarEV6ZpuG',
+        from: 'B62qnqEqsuH7kST9ZrbksRzihXD2tgHfvq9TF73XKAMj47gisT9xsJ5',
+        fee: 200100000n,
+        amount: "16640000000000",
+        nonce: 1,
     };
-    const signedPayment = clientJs.signPayment(payment, fromKeypair.privateKey);
+    const signedPayment = clientWasm.signPayment(payment, clientWasm.genKeys().privateKey);
+    const hashJs = clientJs.hashPayment(signedPayment);
+    const hashWasm = clientWasm.hashPayment(signedPayment);
+    expect(hashJs).toBe(hashWasm)
+});
+
+test("hashStakeDelegation", () => {
     const stakeDelegation = {
-        to: toKeypair.publicKey,
-        from: fromKeypair.publicKey,
-        // fee(u64) can be either f64 or bigint
-        fee: 1n,
-        nonce: 3,
-        memo: 'memo',
-        validUntil: 0xFFFFFFFF,
+        to: 'B62qnsHmPQpZSKnrp978ZHFYwCJFBZtY1qE3UD97dd7taQarEV6ZpuG',
+        from: 'B62qnqEqsuH7kST9ZrbksRzihXD2tgHfvq9TF73XKAMj47gisT9xsJ5',
+        fee: 200100000,
+        nonce: 1,
     };
-    const signedStakeDelegation = clientJs.signStakeDelegation(stakeDelegation, fromKeypair.privateKey);
+    const signedStakeDelegation = clientWasm.signStakeDelegation(stakeDelegation, clientWasm.genKeys().privateKey);
+    const hashJs = clientJs.hashStakeDelegation(signedStakeDelegation);
+    const hashWasm = clientWasm.hashStakeDelegation(signedStakeDelegation);
 
-    new Benchmark.Suite()
-        .on('cycle', function (event) {
-            console.log('\x1b[35m%s\x1b[0m', String(event.target));
-        })
-
-        .add('[js]   genKeys', function () {
-            clientJs.genKeys();
-        })
-        .add('[wasm] genKeys', function () {
-            clientWasm.genKeys();
-        })
-
-        .add('[js]   verifyKeypair', function () {
-            clientJs.verifyKeypair(keypair)
-        })
-        .add('[wasm] verifyKeypair', function () {
-            clientWasm.verifyKeypair(keypair);
-        })
-
-        .add('[js]   derivePublicKey', function () {
-            clientJs.derivePublicKey(keypair.privateKey)
-        })
-        .add('[wasm] derivePublicKey', function () {
-            clientWasm.derivePublicKey(keypair.privateKey);
-        })
-
-        .add('[js]   publicKeyToRaw', function () {
-            clientJs.publicKeyToRaw(keypair.publicKey)
-        })
-        .add('[wasm] publicKeyToRaw', function () {
-            clientWasm.publicKeyToRaw(keypair.publicKey);
-        })
-
-        .add('[js]   signMessage', function () {
-            clientJs.signMessage(message, keypair)
-        })
-        .add('[wasm] signMessage', function () {
-            clientWasm.signMessage(message, keypair);
-        })
-
-        .add('[js]   verifyMessage', function () {
-            clientJs.verifyMessage(signedMessage)
-        })
-        .add('[wasm] verifyMessage', function () {
-            clientWasm.verifyMessage(signedMessage);
-        })
-
-        .add('[js]   signPayment', function () {
-            clientJs.signPayment(payment, fromKeypair.privateKey)
-        })
-        .add('[wasm] signPayment', function () {
-            clientWasm.signPayment(payment, fromKeypair.privateKey)
-        })
-
-        .add('[js]   verifyPayment', function () {
-            clientJs.verifyPayment(signedPayment)
-        })
-        .add('[wasm] verifyPayment', function () {
-            clientWasm.verifyPayment(signedPayment)
-        })
-
-        .add('[js]   signStateDelegation', function () {
-            clientJs.signStakeDelegation(stakeDelegation, fromKeypair.privateKey)
-        })
-        .add('[wasm] signStateDelegation', function () {
-            clientWasm.signStakeDelegation(stakeDelegation, fromKeypair.privateKey)
-        })
-
-        .add('[js]   verifyStateDelegation', function () {
-            clientJs.verifyStakeDelegation(signedStakeDelegation)
-        })
-        .add('[wasm] verifyStateDelegation', function () {
-            clientWasm.verifyStakeDelegation(signedStakeDelegation)
-        })
-
-        .run()
-})
+    expect(hashJs).toBe(hashWasm)
+});
