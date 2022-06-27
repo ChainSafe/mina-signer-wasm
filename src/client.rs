@@ -2,7 +2,7 @@ use crate::*;
 use ark_ff::PrimeField;
 use blake2::digest::VariableOutput;
 use lockfree_object_pool::{SpinLockObjectPool, SpinLockReusable};
-use mina_hasher::{create_legacy, PoseidonHasherLegacy};
+use mina_hasher::PoseidonHasherLegacy;
 use mina_serialization_types::{json::*, v1::*};
 use mina_signer::{NetworkId, PubKey, Schnorr, Signer};
 use once_cell::sync::OnceCell;
@@ -349,7 +349,12 @@ fn signer_ctx_string() -> SpinLockReusable<
     > = OnceCell::new();
     let pool = CTX_POOL.get_or_init(move || {
         SpinLockObjectPool::new(
-            move || Schnorr::new(create_legacy(NetworkId::TESTNET), NetworkId::TESTNET),
+            move || {
+                Schnorr::new(
+                    mina_hasher::create_legacy(NetworkId::TESTNET),
+                    NetworkId::TESTNET,
+                )
+            },
             |_| {},
         )
     });
@@ -365,7 +370,12 @@ fn signer_ctx_payment() -> SpinLockReusable<
     > = OnceCell::new();
     let pool = CTX_POOL.get_or_init(move || {
         SpinLockObjectPool::new(
-            move || Schnorr::new(create_legacy(NetworkId::TESTNET), NetworkId::TESTNET),
+            move || {
+                Schnorr::new(
+                    mina_hasher::create_legacy(NetworkId::TESTNET),
+                    NetworkId::TESTNET,
+                )
+            },
             |_| {},
         )
     });
@@ -383,7 +393,12 @@ fn signer_ctx_stake_delegation() -> SpinLockReusable<
     > = OnceCell::new();
     let pool = CTX_POOL.get_or_init(move || {
         SpinLockObjectPool::new(
-            move || Schnorr::new(create_legacy(NetworkId::TESTNET), NetworkId::TESTNET),
+            move || {
+                Schnorr::new(
+                    mina_hasher::create_legacy(NetworkId::TESTNET),
+                    NetworkId::TESTNET,
+                )
+            },
             |_| {},
         )
     });

@@ -9,8 +9,8 @@ test(
 	"genKeys",
 	() => {
 		const keypair = clientWasm.genKeys();
-		expect(clientWasm.verifyKeypair(keypair));
-		expect(clientJs.verifyKeypair(keypair));
+		expect(clientWasm.verifyKeypair(keypair)).toBe(true);
+		expect(clientJs.verifyKeypair(keypair)).toBe(true);
 	},
 );
 
@@ -18,8 +18,8 @@ test(
 	"verifyKeypair",
 	() => {
 		const keypair = clientJs.genKeys();
-		expect(clientWasm.verifyKeypair(keypair));
-		expect(clientJs.verifyKeypair(keypair));
+		expect(clientWasm.verifyKeypair(keypair)).toBe(true);
+		expect(clientJs.verifyKeypair(keypair)).toBe(true);
 	},
 );
 
@@ -50,12 +50,12 @@ test(
 		const keypair = clientWasm.genKeys();
 
 		const signedMessageJs = clientJs.signMessage(message, keypair);
-		expect(clientJs.verifyMessage(signedMessageJs));
-		expect(clientWasm.verifyMessage(signedMessageJs));
+		expect(clientJs.verifyMessage(signedMessageJs)).toBe(true);
+		expect(clientWasm.verifyMessage(signedMessageJs)).toBe(true);
 
 		const signedMessageWasm = clientWasm.signMessage(message, keypair);
-		expect(clientJs.verifyMessage(signedMessageWasm));
-		expect(clientWasm.verifyMessage(signedMessageWasm));
+		expect(clientJs.verifyMessage(signedMessageWasm)).toBe(true);
+		expect(clientWasm.verifyMessage(signedMessageWasm)).toBe(true);
 	},
 );
 
@@ -67,27 +67,25 @@ test(
 		const payment = {
 			to: toKeypair.publicKey,
 			from: fromKeypair.publicKey,
-			// fee(u64) can be either f64 or bigint
-			fee: 1n,
-			// amount(u64) can be either f64 or bigint
-			amount: 2,
-			nonce: "3",
+			fee: "1",
+			amount: "1",
+			nonce: 3,
 			memo: "memo",
-			validUntil: 0xFFFFFFFF,
+			validUntil: 0xffffffff,
 		};
 		const signedPaymentJs = clientJs.signPayment(
 			payment,
 			fromKeypair.privateKey,
 		);
-		expect(clientJs.verifyPayment(signedPaymentJs));
-		expect(clientWasm.verifyPayment(signedPaymentJs));
+		expect(clientJs.verifyPayment(signedPaymentJs)).toBe(true);
+		expect(clientWasm.verifyPayment(signedPaymentJs)).toBe(true);
 
 		const signedPaymentWasm = clientWasm.signPayment(
 			payment,
 			fromKeypair.privateKey,
 		);
-		expect(clientJs.verifyPayment(signedPaymentWasm));
-		expect(clientWasm.verifyPayment(signedPaymentWasm));
+		expect(clientJs.verifyPayment(signedPaymentWasm)).toBe(true);
+		expect(clientWasm.verifyPayment(signedPaymentWasm)).toBe(true);
 	},
 );
 
@@ -99,7 +97,6 @@ test(
 		const stakeDelegation = {
 			to: toKeypair.publicKey,
 			from: fromKeypair.publicKey,
-			// fee(u64) can be either f64 or bigint
 			fee: 1n,
 			nonce: "3",
 			memo: "memo",
@@ -109,15 +106,21 @@ test(
 			stakeDelegation,
 			fromKeypair.privateKey,
 		);
-		expect(clientJs.verifyStakeDelegation(signedStakeDelegationJs));
-		expect(clientWasm.verifyStakeDelegation(signedStakeDelegationJs));
+		expect(clientJs.verifyStakeDelegation(signedStakeDelegationJs)).toBe(true);
+		expect(clientWasm.verifyStakeDelegation(signedStakeDelegationJs)).toBe(
+			true,
+		);
 
 		const signedStakeDelegationWasm = clientWasm.signStakeDelegation(
 			stakeDelegation,
 			fromKeypair.privateKey,
 		);
-		expect(clientJs.verifyStakeDelegation(signedStakeDelegationWasm));
-		expect(clientWasm.verifyStakeDelegation(signedStakeDelegationWasm));
+		expect(clientJs.verifyStakeDelegation(signedStakeDelegationWasm)).toBe(
+			true,
+		);
+		expect(clientWasm.verifyStakeDelegation(signedStakeDelegationWasm)).toBe(
+			true,
+		);
 	},
 );
 

@@ -45,8 +45,14 @@ pub(crate) fn string_to_memo(s: Option<String>) -> [u8; constants::MEMO_BYTES] {
     let mut memo = [0; constants::MEMO_BYTES];
     memo[0] = 1;
     if let Some(s) = s {
-        memo[1] = s.len() as u8;
-        for (i, &b) in s.as_bytes().iter().take(32).enumerate() {
+        const MAX_BYTES: u8 = constants::MEMO_BYTES as u8 - 2;
+        memo[1] = MAX_BYTES.min(s.len() as u8);
+        for (i, &b) in s
+            .as_bytes()
+            .iter()
+            .take(constants::MEMO_BYTES - 2)
+            .enumerate()
+        {
             memo[i + 2] = b;
         }
     }

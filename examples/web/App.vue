@@ -34,7 +34,7 @@ export default {
             },
             paymentStr: JSON.stringify({
                 to: 'B62qnsHmPQpZSKnrp978ZHFYwCJFBZtY1qE3UD97dd7taQarEV6ZpuG',
-                from: 'B62qnqEqsuH7kST9ZrbksRzihXD2tgHfvq9TF73XKAMj47gisT9xsJ5',
+                from: '',
                 fee: 1,
                 amount: 2,
                 nonce: "3",
@@ -56,6 +56,13 @@ export default {
         },
         genKeys() {
             this.keypair = this.client.genKeys();
+            try {
+                const payment = JSON.parse(this.paymentStr);
+                payment.from = this.keypair.publicKey;
+                this.paymentStr = JSON.stringify(payment, null, 2);
+            } catch (e) {
+                this.signedPaymentStr = `${e}`;
+            }
         },
         signPayment() {
             try {
