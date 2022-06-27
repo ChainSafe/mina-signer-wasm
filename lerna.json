@@ -1,6 +1,7 @@
 {
   "packages": [
-    "examples/integration_tests"
+    "examples/integration_tests",
+    "examples/web"
   ],
   "version": "5.1.4",
   "npmClient": "yarn"
