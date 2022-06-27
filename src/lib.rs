@@ -30,4 +30,5 @@ use mina_signer::{Keypair as MinaKeypair, Signature as MinaSignature};
 
 use ark_ec::AffineCurve;
 use mina_curves::pasta::pallas::Affine as CurvePoint;
+use mina_signer::schnorr::Message as SchnorrMessage;
 use o1_utils::FieldHelpers;

@@ -1,8 +1,11 @@
 use crate::*;
 use ark_ff::PrimeField;
 use blake2::digest::VariableOutput;
+use lockfree_object_pool::{SpinLockObjectPool, SpinLockReusable};
+use mina_hasher::{create_legacy, PoseidonHasherLegacy};
 use mina_serialization_types::{json::*, v1::*};
-use mina_signer::{NetworkId, PubKey, Signer};
+use mina_signer::{NetworkId, PubKey, Schnorr, Signer};
+use once_cell::sync::OnceCell;
 use std::io::Write;
 
 #[wasm_bindgen]
@@ -217,9 +220,9 @@ impl ClientImpl {
     }
 
     pub fn sign_message(&self, message: String, keypair: &MinaKeypair) -> MinaSignature {
-        let message: StringMessage = message.into();
-        let mut ctx = mina_signer::create_legacy(self.network_id());
-        ctx.sign(keypair, &message)
+        let mut ctx = signer_ctx_string();
+        ctx.init_domain_param(self.network_id());
+        ctx.sign(keypair, &message.into())
     }
 
     pub fn verify_message(&self, signed_message: SignedMessage) -> Result<bool, JsError> {
@@ -227,12 +230,14 @@ impl ClientImpl {
         let data = signed_message.data();
         let public_key = PubKey::from_address(data.public_key().as_str()).map_err(map_js_err)?;
         let payload: StringMessage = data.message().into();
-        let mut ctx = mina_signer::create_legacy(self.network_id());
+        let mut ctx = signer_ctx_string();
+        ctx.init_domain_param(self.network_id());
         Ok(ctx.verify(&signature, &public_key, &payload))
     }
 
     pub fn sign_payment(&self, payment: &MinaPayment, keypair: &MinaKeypair) -> MinaSignature {
-        let mut ctx = mina_signer::create_legacy(self.network_id());
+        let mut ctx = signer_ctx_payment();
+        ctx.init_domain_param(self.network_id());
         ctx.sign(keypair, payment)
     }
 
@@ -241,7 +246,8 @@ impl ClientImpl {
         let payment = signed_payment.data();
         let public_key = PubKey::from_address(payment.from().as_str()).map_err(map_js_err)?;
         let payload: MinaPayment = payment.try_into()?;
-        let mut ctx = mina_signer::create_legacy(self.network_id());
+        let mut ctx = signer_ctx_payment();
+        ctx.init_domain_param(self.network_id());
         Ok(ctx.verify(&signature, &public_key, &payload))
     }
 
@@ -250,7 +256,8 @@ impl ClientImpl {
         stake_delegation: &MinaStakeDelegation,
         keypair: &MinaKeypair,
     ) -> MinaSignature {
-        let mut ctx = mina_signer::create_legacy(self.network_id());
+        let mut ctx = signer_ctx_stake_delegation();
+        ctx.init_domain_param(self.network_id());
         ctx.sign(keypair, stake_delegation)
     }
 
@@ -263,7 +270,8 @@ impl ClientImpl {
         let public_key =
             PubKey::from_address(stake_delegation.from().as_str()).map_err(map_js_err)?;
         let payload: MinaStakeDelegation = stake_delegation.try_into()?;
-        let mut ctx = mina_signer::create_legacy(self.network_id());
+        let mut ctx = signer_ctx_stake_delegation();
+        ctx.init_domain_param(self.network_id());
         Ok(ctx.verify(&signature, &public_key, &payload))
     }
 
@@ -328,4 +336,56 @@ impl ClientImpl {
             _ => NetworkId::TESTNET,
         }
     }
+}
+
+fn signer_ctx_string() -> SpinLockReusable<
+    'static,
+    Schnorr<PoseidonHasherLegacy<SchnorrMessage<StringMessage>>, StringMessage>,
+> {
+    static CTX_POOL: OnceCell<
+        SpinLockObjectPool<
+            Schnorr<PoseidonHasherLegacy<SchnorrMessage<StringMessage>>, StringMessage>,
+        >,
+    > = OnceCell::new();
+    let pool = CTX_POOL.get_or_init(move || {
+        SpinLockObjectPool::new(
+            move || Schnorr::new(create_legacy(NetworkId::TESTNET), NetworkId::TESTNET),
+            |_| {},
+        )
+    });
+    pool.pull()
+}
+
+fn signer_ctx_payment() -> SpinLockReusable<
+    'static,
+    Schnorr<PoseidonHasherLegacy<SchnorrMessage<MinaPayment>>, MinaPayment>,
+> {
+    static CTX_POOL: OnceCell<
+        SpinLockObjectPool<Schnorr<PoseidonHasherLegacy<SchnorrMessage<MinaPayment>>, MinaPayment>>,
+    > = OnceCell::new();
+    let pool = CTX_POOL.get_or_init(move || {
+        SpinLockObjectPool::new(
+            move || Schnorr::new(create_legacy(NetworkId::TESTNET), NetworkId::TESTNET),
+            |_| {},
+        )
+    });
+    pool.pull()
+}
+
+fn signer_ctx_stake_delegation() -> SpinLockReusable<
+    'static,
+    Schnorr<PoseidonHasherLegacy<SchnorrMessage<MinaStakeDelegation>>, MinaStakeDelegation>,
+> {
+    static CTX_POOL: OnceCell<
+        SpinLockObjectPool<
+            Schnorr<PoseidonHasherLegacy<SchnorrMessage<MinaStakeDelegation>>, MinaStakeDelegation>,
+        >,
+    > = OnceCell::new();
+    let pool = CTX_POOL.get_or_init(move || {
+        SpinLockObjectPool::new(
+            move || Schnorr::new(create_legacy(NetworkId::TESTNET), NetworkId::TESTNET),
+            |_| {},
+        )
+    });
+    pool.pull()
 }
