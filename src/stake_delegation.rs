@@ -126,15 +126,7 @@ pub struct MinaStakeDelegation {
 
 impl From<MinaStakeDelegation> for StakeDelegation {
     fn from(v: MinaStakeDelegation) -> Self {
-        let mut memo_len = v.memo.len();
-        while memo_len > 0 && v.memo[memo_len - 1] == 0 {
-            memo_len -= 1;
-        }
-        let memo = if memo_len == 0 {
-            None
-        } else {
-            Some(unsafe { String::from_utf8_unchecked(v.memo[..memo_len].into()) })
-        };
+        let memo = memo_to_string(&v.memo);
         new_stake_delegation(
             v.to.into_address(),
             v.from.into_address(),

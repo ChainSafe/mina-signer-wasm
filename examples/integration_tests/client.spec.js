@@ -131,6 +131,7 @@ test(
 			fee: 200100000n,
 			amount: "16640000000000",
 			nonce: 1,
+			memo: "memo",
 		};
 		const signedPayment = clientWasm.signPayment(
 			payment,
@@ -150,6 +151,7 @@ test(
 			from: "B62qnqEqsuH7kST9ZrbksRzihXD2tgHfvq9TF73XKAMj47gisT9xsJ5",
 			fee: 200100000,
 			nonce: 1,
+			memo: "memo",
 		};
 		const signedStakeDelegation = clientWasm.signStakeDelegation(
 			stakeDelegation,
@@ -174,7 +176,7 @@ test(
 				fee: "10000000",
 				token: "1",
 				nonce: "0",
-				memo: null,
+				memo: "memo",
 				amount: "1000000000",
 				valid_until: "4294967295",
 			},
@@ -209,7 +211,7 @@ test(
 				delegator: "B62qnzbXmRNo9q32n4SNu2mpB8e7FYYLH8NmaX6oFCBYjjQ8SbD7uzV",
 				fee: "10000000",
 				nonce: "0",
-				memo: null,
+				memo: "memo",
 				valid_until: "4294967295",
 			},
 			create_token: null,

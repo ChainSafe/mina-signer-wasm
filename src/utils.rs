@@ -53,6 +53,15 @@ pub(crate) fn string_to_memo(s: Option<String>) -> [u8; constants::MEMO_BYTES] {
     memo
 }
 
+pub(crate) fn memo_to_string(memo: &[u8; constants::MEMO_BYTES]) -> Option<String> {
+    let memo_len = memo[1] as usize;
+    if memo_len == 0 {
+        None
+    } else {
+        Some(unsafe { String::from_utf8_unchecked(memo[2..(memo_len + 2)].into()) })
+    }
+}
+
 #[wasm_bindgen(inline_js = r#"
         function js_to_string(v) {
             return `${v}`
