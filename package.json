@@ -3,5 +3,6 @@
   "private": true,
   "devDependencies": {
     "lerna": "^5.1.4"
-  }
+  },
+  "packageManager": "yarn@3.2.1"
 }
