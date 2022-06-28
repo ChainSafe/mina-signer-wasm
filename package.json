@@ -1,8 +1,8 @@
 {
   "name": "root",
   "private": true,
-  "devDependencies": {
-    "lerna": "^5.1.4"
-  },
+  "workspaces": [
+    "examples/*"
+  ],
   "packageManager": "yarn@3.2.1"
 }
