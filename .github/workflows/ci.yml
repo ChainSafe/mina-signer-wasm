@@ -26,13 +26,12 @@ jobs:
       - run: cargo fmt --all -- --check
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
       - run: wasm-pack test --node --release --all-features
-      - run: lerna bootstrap
-      - run: lerna run build --stream
-      - run: lerna run test --stream
-      - run: lerna run ci --stream
-      - run: lerna run benchmark --stream
-      - run: wasm-pack build -t web -d pkg-web -s hanabi1224
-      - run: wasm-pack build -t nodejs -d pkg-node -s hanabi1224
+      - run: yarn install
+      - run: yarn workspaces foreach -vpt run build
+      - run: yarn workspaces foreach -vpt run test
+      - run: yarn workspace integration_tests benchmark --stream
+      - run: wasm-pack build -t web -d pkg-web -s ChainSafe
+      - run: wasm-pack build -t nodejs -d pkg-node -s ChainSafe
       - uses: actions/upload-artifact@v3
         with:
           name: npm-pkg-web

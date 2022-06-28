@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "build": "yarn build:wasm",
     "build:wasm": "wasm-pack build -t nodejs -d examples/integration_tests/pkg ../../",
     "jest": "jest",
     "test": "yarn build:wasm && yarn jest",
