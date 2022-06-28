@@ -1,5 +1,5 @@
 {
-  "name": "root",
+  "name": "mina-singer-wasm",
   "private": true,
   "workspaces": [
     "examples/*"

@@ -27,8 +27,8 @@ This library is a drop-in replacement of [mina-signer](https://www.npmjs.com/pac
 
 ## Prerequisites
 
-- [node (lts)](https://nodejs.org/en/download/)
-- [yarn (v1)](https://classic.yarnpkg.com/)
+- [node (16)](https://nodejs.org/en/download/)
+- [yarn (latest)](https://yarnpkg.com/)
 - [rust (stable)](https://rustup.rs/)
 - [wasm-pack (latest)](https://rustwasm.github.io/wasm-pack/)
 
