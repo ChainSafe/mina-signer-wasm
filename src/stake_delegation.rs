@@ -5,7 +5,7 @@ use mina_signer::{CompressedPubKey, NetworkId};
 use num_traits::identities::One;
 
 #[wasm_bindgen(typescript_custom_section)]
-const PAYMENT: &'static str = r#"
+const STAKE_DELEGATION: &'static str = r#"
 interface StakeDelegation {
     to: PublicKey;
     from: PublicKey;
