@@ -1,0 +1,22 @@
+{
+  "name": "mina-singer-wasm",
+  "description": "Lightweight implementation of mina-signer build into wasm package for browser and nodejs.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "./node/index.js",
+  "browser": "./browser/index.js",
+  "types": "./browser/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ChainSafe/mina-signer-wasm.git"
+  },
+  "homepage": "https://github.com/ChainSafe/mina-signer-wasm",
+  "keywords": [
+    "mina",
+    "singer",
+    "wasm"
+  ],
+  "contributors": [
+    "ChainSafe <info@chainsafe.io> (https://chainsafe.io)"
+  ]
+}

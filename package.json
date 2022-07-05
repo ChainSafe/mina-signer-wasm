@@ -1,8 +1,14 @@
 {
-  "name": "mina-singer-wasm",
   "private": true,
+  "scripts": {
+    "build": "yarn build:node && yarn build:browser && yarn postbuild",
+    "build:browser": "wasm-pack build -t web -d package/browser",
+    "build:node": "wasm-pack build -t nodejs -d package/node",
+    "postbuild": "node postbuild.js"
+  },
   "workspaces": [
-    "examples/*"
+    "examples/*",
+    "package"
   ],
   "packageManager": "yarn@3.2.1"
 }
