@@ -3,6 +3,14 @@ use derive_more::{From, Into};
 use mina_hasher::{Hashable, ROInput};
 use mina_signer::NetworkId;
 
+#[wasm_bindgen(typescript_custom_section)]
+const MESSAGE: &'static str = r#"
+interface Message {
+    publicKey: PublicKey;
+    message: string;
+}
+"#;
+
 #[wasm_bindgen]
 extern "C" {
     pub type Message;
@@ -13,6 +21,7 @@ extern "C" {
     #[wasm_bindgen(method, getter)]
     pub fn message(this: &Message) -> String;
 
+    #[wasm_bindgen(typescript_type = "Signed<Message>")]
     pub type SignedMessage;
 
     #[wasm_bindgen(method, getter)]

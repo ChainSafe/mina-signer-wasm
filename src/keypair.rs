@@ -3,8 +3,21 @@ use ark_ec::AffineCurve;
 use mina_curves::pasta::pallas::Affine as CurvePoint;
 use mina_signer::PubKey;
 
+#[wasm_bindgen(typescript_custom_section)]
+const KEYPAIR: &'static str = r#"
+type PublicKey = string;
+
+type PrivateKey = string;
+
+interface Keypair {
+    privateKey: PrivateKey;
+    publicKey: PublicKey;
+}
+"#;
+
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "Keypair")]
     pub type Keypair;
 
     #[wasm_bindgen(method, getter, js_name = privateKey)]

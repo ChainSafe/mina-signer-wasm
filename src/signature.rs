@@ -3,8 +3,22 @@ use ark_ff::BigInteger256;
 use num_bigint::BigUint;
 use num_traits::Num;
 
+#[wasm_bindgen(typescript_custom_section)]
+const SIGNATURE: &'static str = r#"
+interface Signature {
+    field: string;
+    scalar: string;
+}
+
+interface Signed<SignableData> {
+    signature: Signature;
+    data: SignableData;
+}
+"#;
+
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "Signature")]
     pub type Signature;
 
     #[wasm_bindgen(method, getter)]

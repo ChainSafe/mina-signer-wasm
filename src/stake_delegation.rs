@@ -4,8 +4,21 @@ use mina_serialization_types::{common::*, json::*};
 use mina_signer::{CompressedPubKey, NetworkId};
 use num_traits::identities::One;
 
+#[wasm_bindgen(typescript_custom_section)]
+const PAYMENT: &'static str = r#"
+interface StakeDelegation {
+    to: PublicKey;
+    from: PublicKey;
+    fee: UInt64;
+    nonce: UInt32;
+    memo?: string;
+    validUntil?: UInt32;
+}
+"#;
+
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "StakeDelegation")]
     pub type StakeDelegation;
 
     #[wasm_bindgen(method, getter)]
@@ -28,6 +41,7 @@ extern "C" {
     #[wasm_bindgen(method, getter, js_name = validUntil)]
     pub fn valid_until(this: &StakeDelegation) -> JsValue;
 
+    #[wasm_bindgen(typescript_type = "Signed<StakeDelegation>")]
     pub type SignedStakeDelegation;
 
     #[wasm_bindgen(method, getter)]
