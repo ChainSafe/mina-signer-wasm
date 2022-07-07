@@ -1,6 +1,11 @@
 const path = require('node:path');
 const fs = require('node:fs');
 
+/**
+ * After building wasm files with `wasm-pack`
+ * some bloat need to be removed and rename one of files for better ux
+ * */
+
 console.log("## Starting Post-build process ##");
 
 const packagePath = path.resolve('package');

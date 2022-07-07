@@ -1,4 +1,5 @@
 {
+  "name": "root",
   "private": true,
   "scripts": {
     "build": "yarn build:node && yarn build:browser && yarn postbuild",
