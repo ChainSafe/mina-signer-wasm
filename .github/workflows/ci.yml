@@ -26,6 +26,11 @@ jobs:
           components: rustfmt, clippy
           target: wasm32-unknown-unknown
           override: true
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version: 16
+          registry-url: 'https://registry.npmjs.org'
       - uses: Swatinem/rust-cache@v1
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
@@ -56,6 +61,7 @@ jobs:
         id: release
         with:
           release-type: node
+          version-file: "package/package.json"
           package-name: release-please-action
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
 
@@ -64,7 +70,6 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          cache: 'yarn'
           node-version: 16
           registry-url: 'https://registry.npmjs.org'
         if: ${{ steps.release.outputs.release_created }}
