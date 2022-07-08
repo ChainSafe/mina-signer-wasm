@@ -1,16 +1,21 @@
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
+    branches:
+      - '**'
 
 name: CI
 
 env:
   # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
   CARGO_INCREMENTAL: 1
+  CI: 1
 
 jobs:
-  wasm:
+  checks:
+    name: Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,17 +26,19 @@ jobs:
           components: rustfmt, clippy
           target: wasm32-unknown-unknown
           override: true
+      - uses: Swatinem/rust-cache@v1
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --all -- --check
-      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
+      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown
       - run: wasm-pack test --node --release --all-features
-      - run: yarn install --immutable
+      - name: Install node_modules
+        run: yarn install --immutable
       - run: yarn workspaces foreach -vpt run build
       - run: yarn workspaces foreach -vpt run test
       - run: yarn workspace integration_tests benchmark
       - run: wasm-pack build -t web -d pkg-web -s ChainSafe
-      - run: wasm-pack build -t nodejs -d pkg-node -s ChainSafe
+      - run: wasm-pack build -t web -d pkg-node -s ChainSafe
       - uses: actions/upload-artifact@v3
         with:
           name: npm-pkg-web
@@ -42,3 +49,43 @@ jobs:
           name: npm-pkg-node
           path: pkg-node/**/*
           if-no-files-found: error
+
+  maybe-release:
+    name: release
+    runs-on: ubuntu-latest
+    needs: [ checks ]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: npm-pkg-web
+
+      - uses: actions/download-artifact@v3
+        with:
+          name: npm-pkg-node
+
+      - run: ls -R
+
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          release-type: node
+          package-name: release-please-action
+          changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
+
+      # - uses: actions/checkout@v3
+      #   if: ${{ steps.release.outputs.release_created }}
+
+      # - uses: actions/setup-node@v3
+      #   with:
+      #     cache: 'yarn'
+      #     node-version: 16
+      #     registry-url: 'https://registry.npmjs.org'
+      #   if: ${{ steps.release.outputs.release_created }}
+
+
+      # - run: yarn npm publish --access public
+      #   working-directory: ./package
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      #   if: ${{ steps.release.outputs.release_created }}
