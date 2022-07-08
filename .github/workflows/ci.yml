@@ -54,8 +54,6 @@ jobs:
         with:
           name: mina-singer-wasm-package
 
-      - run: ls -R
-
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
@@ -63,19 +61,17 @@ jobs:
           package-name: release-please-action
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
 
-      # - uses: actions/checkout@v3
-      #   if: ${{ steps.release.outputs.release_created }}
+       - uses: actions/checkout@v3
+         if: ${{ steps.release.outputs.release_created }}
 
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     cache: 'yarn'
-      #     node-version: 16
-      #     registry-url: 'https://registry.npmjs.org'
-      #   if: ${{ steps.release.outputs.release_created }}
+       - uses: actions/setup-node@v3
+         with:
+           cache: 'yarn'
+           node-version: 16
+           registry-url: 'https://registry.npmjs.org'
+         if: ${{ steps.release.outputs.release_created }}
 
-
-      # - run: yarn npm publish --access public
-      #   working-directory: ./package
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      #   if: ${{ steps.release.outputs.release_created }}
+       - run: yarn npm publish --access public
+         env:
+           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+         if: ${{ steps.release.outputs.release_created }}
