@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.0.2](https://github.com/ChainSafe/mina-signer-wasm/compare/v1.0.1...v1.0.2) (2022-07-08)
+
+
+### Bug Fixes
+
+* lockfile ([4ca8f0e](https://github.com/ChainSafe/mina-signer-wasm/commit/4ca8f0ed83af48a4d071b70e88113fd908fea339))
+* update all package versions ([e7a4d42](https://github.com/ChainSafe/mina-signer-wasm/commit/e7a4d42814d54f2e84caf012b372e4c4b28bdcb1))
+
+
+### Miscellaneous
+
+* fix yarn cache ([#9](https://github.com/ChainSafe/mina-signer-wasm/issues/9)) ([1e1ac53](https://github.com/ChainSafe/mina-signer-wasm/commit/1e1ac5383a139e8390a1a13c9fcf32b525237d22))
+
 ## [1.0.1](https://github.com/ChainSafe/mina-signer-wasm/compare/v1.0.1...v1.0.1) (2022-07-08)
 
 
