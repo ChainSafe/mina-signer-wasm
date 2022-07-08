@@ -11,6 +11,7 @@ name: CI
 env:
   # https://doc.rust-lang.org/cargo/reference/profiles.html#incremental
   CARGO_INCREMENTAL: 1
+  CI: 1
 
 jobs:
   checks:
@@ -25,10 +26,11 @@ jobs:
           components: rustfmt, clippy
           target: wasm32-unknown-unknown
           override: true
+      - uses: Swatinem/rust-cache@v1
       - name: Install wasm-pack
         run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
       - run: cargo fmt --all -- --check
-      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
+      - run: cargo clippy --release --all-features --target wasm32-unknown-unknown
       - run: wasm-pack test --node --release --all-features
       - name: Install node_modules
         run: yarn install --immutable
