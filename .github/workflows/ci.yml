@@ -31,8 +31,7 @@ jobs:
       - run: cargo clippy --release --all-features --target wasm32-unknown-unknown -- --deny warnings
       - run: wasm-pack test --node --release --all-features
       - name: Install node_modules
-      - run: yarn install --immutable
-      - name: Tests wasm
+        run: yarn install --immutable
       - run: yarn workspaces foreach -vpt run build
       - run: yarn workspaces foreach -vpt run test
       - run: yarn workspace integration_tests benchmark
@@ -58,7 +57,7 @@ jobs:
       - uses: actions/download-artifact@v3
         with:
           name: npm-pkg-web
-          
+
       - uses: actions/download-artifact@v3
         with:
           name: npm-pkg-node
