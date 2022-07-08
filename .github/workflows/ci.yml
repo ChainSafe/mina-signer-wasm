@@ -75,5 +75,5 @@ jobs:
         run: |
           echo npmAuthToken: "$NODE_AUTH_TOKEN" >> ./.yarnrc.yml
 
-      - run: yarn workspace mina-signer-wasm npm publish --access-public
+      - run: yarn workspace mina-signer-wasm npm publish --access public
         if: ${{ steps.release.outputs.release_created }}
