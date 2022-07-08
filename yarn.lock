@@ -4168,9 +4168,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mina-singer-wasm@workspace:.":
+"mina-singer-wasm@workspace:package":
   version: 0.0.0-use.local
-  resolution: "mina-singer-wasm@workspace:."
+  resolution: "mina-singer-wasm@workspace:package"
   languageName: unknown
   linkType: soft
 
@@ -4945,6 +4945,12 @@ rome@next:
   checksum: bb8662ca08eb7c24ab27ec089c064b6ebf8a94e8da05bb7d6adfcd3ce0c84500464b2b0b078d24bc2eb5f0a5478f82a168e3aae8aafb53d20aa458b11725961d
   languageName: node
   linkType: hard
+
+"root@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "root@workspace:."
+  languageName: unknown
+  linkType: soft
 
 "safe-buffer@npm:^5.0.1, safe-buffer@npm:~5.2.0":
   version: 5.2.1

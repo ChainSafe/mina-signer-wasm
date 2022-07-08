@@ -8,8 +8,16 @@ use mina_signer::{NetworkId, PubKey, Schnorr, Signer};
 use once_cell::sync::OnceCell;
 use std::io::Write;
 
+#[wasm_bindgen(typescript_custom_section)]
+const CLIENT_OPTIONS: &'static str = r#"
+interface ClientOptions {
+    network: "mainnet" | "testnet";
+}
+"#;
+
 #[wasm_bindgen]
 extern "C" {
+    #[wasm_bindgen(typescript_type = "ClientOptions")]
     pub type ClientOptions;
 
     #[wasm_bindgen(method, getter)]

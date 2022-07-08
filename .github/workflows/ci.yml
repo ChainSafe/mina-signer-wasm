@@ -36,18 +36,10 @@ jobs:
         run: yarn install --immutable
       - run: yarn workspaces foreach -vpt run build
       - run: yarn workspaces foreach -vpt run test
-      - run: yarn workspace integration_tests benchmark
-      - run: wasm-pack build -t web -d pkg-web -s ChainSafe
-      - run: wasm-pack build -t web -d pkg-node -s ChainSafe
       - uses: actions/upload-artifact@v3
         with:
-          name: npm-pkg-web
-          path: pkg-web/**/*
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v3
-        with:
-          name: npm-pkg-node
-          path: pkg-node/**/*
+          name: mina-singer-wasm-package
+          path: package/**/*
           if-no-files-found: error
 
   maybe-release:
@@ -58,13 +50,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: npm-pkg-web
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: npm-pkg-node
-
-      - run: ls -R
+          name: mina-singer-wasm-package
 
       - uses: google-github-actions/release-please-action@v3
         id: release
@@ -73,19 +59,21 @@ jobs:
           package-name: release-please-action
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
 
-      # - uses: actions/checkout@v3
-      #   if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/checkout@v3
+        if: ${{ steps.release.outputs.release_created }}
 
-      # - uses: actions/setup-node@v3
-      #   with:
-      #     cache: 'yarn'
-      #     node-version: 16
-      #     registry-url: 'https://registry.npmjs.org'
-      #   if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version: 16
+          registry-url: 'https://registry.npmjs.org'
+        if: ${{ steps.release.outputs.release_created }}
 
+      - env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        if: ${{ steps.release.outputs.release_created }}
+        run: |
+          echo npmAuthToken: "$NODE_AUTH_TOKEN" >> ./.yarnrc.yml
 
-      # - run: yarn npm publish --access public
-      #   working-directory: ./package
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-      #   if: ${{ steps.release.outputs.release_created }}
+      - run: yarn workspace mina-signer-wasm npm publish --access-public
+        if: ${{ steps.release.outputs.release_created }}
