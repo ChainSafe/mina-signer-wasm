@@ -37,17 +37,12 @@ jobs:
       - run: yarn workspaces foreach -vpt run build
       - run: yarn workspaces foreach -vpt run test
       - run: yarn workspace integration_tests benchmark
-      - run: wasm-pack build -t web -d pkg-web -s ChainSafe
-      - run: wasm-pack build -t web -d pkg-node -s ChainSafe
+      - name: Build npm package
+        run: yarn build
       - uses: actions/upload-artifact@v3
         with:
-          name: npm-pkg-web
-          path: pkg-web/**/*
-          if-no-files-found: error
-      - uses: actions/upload-artifact@v3
-        with:
-          name: npm-pkg-node
-          path: pkg-node/**/*
+          name: mina-singer-wasm-package
+          path: package/
           if-no-files-found: error
 
   maybe-release:
@@ -58,11 +53,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: npm-pkg-web
-
-      - uses: actions/download-artifact@v3
-        with:
-          name: npm-pkg-node
+          name: mina-singer-wasm-package
 
       - run: ls -R
 
