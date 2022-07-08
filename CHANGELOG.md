@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/ChainSafe/mina-signer-wasm/compare/v1.0.1...v1.0.1) (2022-07-08)
+
+
+### Miscellaneous
+
+* release 1.0.1 ([7b3d59c](https://github.com/ChainSafe/mina-signer-wasm/commit/7b3d59c5e4e0a110e7a79d80d0cdfd54b3178ea0))
+
 ## [1.0.1](https://github.com/ChainSafe/mina-signer-wasm/compare/v1.0.0...v1.0.1) (2022-07-08)
 
 
