@@ -4159,6 +4159,12 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mina-signer-wasm@workspace:package":
+  version: 0.0.0-use.local
+  resolution: "mina-signer-wasm@workspace:package"
+  languageName: unknown
+  linkType: soft
+
 "mina-signer@npm:^1.1.0":
   version: 1.1.0
   resolution: "mina-signer@npm:1.1.0"
@@ -4167,12 +4173,6 @@ __metadata:
   checksum: 2bf7df1f5a7fbf53c74f9e3a828d2cc2c04f48b3efaccf72473c2e5fa36bdfa14d3f8159c704a91a5fa80749ef1544ee71a74513fb3abfd518de76f09481b33b
   languageName: node
   linkType: hard
-
-"mina-singer-wasm@workspace:package":
-  version: 0.0.0-use.local
-  resolution: "mina-singer-wasm@workspace:package"
-  languageName: unknown
-  linkType: soft
 
 "minimatch@npm:^3.0.4, minimatch@npm:^3.1.1":
   version: 3.1.2
