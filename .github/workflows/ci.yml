@@ -36,8 +36,6 @@ jobs:
         run: yarn install --immutable
       - run: yarn workspaces foreach -vpt run build
       - run: yarn workspaces foreach -vpt run test
-      - name: Build npm package
-        run: yarn build
       - uses: actions/upload-artifact@v3
         with:
           name: mina-singer-wasm-package
