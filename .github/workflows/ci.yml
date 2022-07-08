@@ -41,7 +41,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: mina-singer-wasm-package
-          path: package/
+          path: package/**/*
           if-no-files-found: error
 
   maybe-release:
@@ -61,18 +61,21 @@ jobs:
           package-name: release-please-action
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
 
-       - uses: actions/checkout@v3
-         if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/checkout@v3
+        if: ${{ steps.release.outputs.release_created }}
 
-       - uses: actions/setup-node@v3
-         with:
-           cache: 'yarn'
-           node-version: 16
-           registry-url: 'https://registry.npmjs.org'
-         if: ${{ steps.release.outputs.release_created }}
+      - uses: actions/setup-node@v3
+        with:
+          cache: 'yarn'
+          node-version: 16
+          registry-url: 'https://registry.npmjs.org'
+        if: ${{ steps.release.outputs.release_created }}
 
-       - run: yarn npm publish --access public
-         working-directory: ./package
-         env:
-           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+      - env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+        if: ${{ steps.release.outputs.releases_created }}
+        run: |
+          echo npmAuthToken: "$NODE_AUTH_TOKEN" >> ./.yarnrc.yml
+
+       - run: yarn workspace mina-signer-wasm npm publish --access-public
          if: ${{ steps.release.outputs.release_created }}
