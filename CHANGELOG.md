@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/ChainSafe/mina-signer-wasm/compare/v1.0.0...v1.0.1) (2022-07-08)
+
+
+### Bug Fixes
+
+* package name typo ([ab272e3](https://github.com/ChainSafe/mina-signer-wasm/commit/ab272e3913b09abe1c5aa60b82ac29c28821b28a))
+* update lockfile ([5865c16](https://github.com/ChainSafe/mina-signer-wasm/commit/5865c168898b88ab34a9340dee3dec43b8f715d7))
+
 ## 1.0.0 (2022-07-08)
 
 
