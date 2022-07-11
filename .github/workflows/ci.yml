@@ -60,25 +60,28 @@ jobs:
       - uses: google-github-actions/release-please-action@v3
         id: release
         with:
+          command: manifest
+          token: ${{secrets.GITHUB_TOKEN}}
+          default-branch: master
           release-type: node
-          extra-files: '{"type":"json","path":"package/package.json","jsonpath":"$.json.version"}'
-          package-name: release-please-action
+          monorepo-tags: false
+          package-name: mina-signer-wasm
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
 
       - uses: actions/checkout@v3
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
       - uses: actions/setup-node@v3
         with:
           node-version: 16
           registry-url: "https://registry.npmjs.org"
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
 
       - env:
           NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}
         run: |
           echo npmAuthToken: "$NODE_AUTH_TOKEN" >> ./.yarnrc.yml
 
       - run: yarn workspace @chainsafe/mina-signer-wasm npm publish --access public
-        if: ${{ steps.release.outputs.release_created }}
+        if: ${{ steps.release.outputs.releases_created }}

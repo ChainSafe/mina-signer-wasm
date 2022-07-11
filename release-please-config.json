@@ -1,0 +1,21 @@
+{
+    "plugins": [],
+    "packages": {
+      ".": {
+        "releaseType": "node",
+        "draft": false,
+        "prerelease": false,
+        "bumpMinorPreMajor": false,
+        "bumpPatchForMinorPreMajor": false,
+        "changelogPath": "CHANGELOG.md",
+        "versioning": "default",
+        "extra-files": [
+            {
+              "type": "json",
+              "path": "package/package.json",
+              "jsonpath": "$.version"
+            }
+          ]
+      }
+    }
+  }
