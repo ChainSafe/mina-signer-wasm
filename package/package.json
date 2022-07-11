@@ -1,7 +1,7 @@
 {
   "name": "@chainsafe/mina-signer-wasm",
   "description": "Lightweight implementation of mina-signer build into wasm package for browser and nodejs.",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "license": "MIT",
   "main": "./node/index.js",
   "browser": "./browser/index.js",
