@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/ChainSafe/mina-signer-wasm/compare/root-v1.0.1...root-v1.0.2) (2022-07-13)
+
+
+### Bug Fixes
+
+* release ci deleting package files ([5615d82](https://github.com/ChainSafe/mina-signer-wasm/commit/5615d82a89c326240d76b49cda54f4d7de7119cf))
+
 ## 1.0.1 (2022-07-11)
 
 
