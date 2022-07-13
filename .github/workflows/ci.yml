@@ -53,9 +53,14 @@ jobs:
     needs: [checks]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     steps:
+      - uses: actions/checkout@v3
+        if: ${{ steps.release.outputs.releases_created }}
+
       - uses: actions/download-artifact@v3
         with:
           name: mina-singer-wasm-package
+      
+      - run: ls -la ./package
 
       - uses: google-github-actions/release-please-action@v3
         id: release
@@ -67,9 +72,6 @@ jobs:
           monorepo-tags: false
           package-name: mina-signer-wasm
           changelog-types: '[{"type":"feat","section":"Features","hidden":false},{"type":"fix","section":"Bug Fixes","hidden":false},{"type":"chore","section":"Miscellaneous","hidden":false}]'
-
-      - uses: actions/checkout@v3
-        if: ${{ steps.release.outputs.releases_created }}
 
       - uses: actions/setup-node@v3
         with:
