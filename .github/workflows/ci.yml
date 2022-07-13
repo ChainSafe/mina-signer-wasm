@@ -55,13 +55,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - run: ls -la package
+      - run: ls -R
 
       - uses: actions/download-artifact@v3
         with:
           name: mina-singer-wasm-package
+          path: package
       
-      - run: ls -la package
+      - run: ls -R
 
       - uses: google-github-actions/release-please-action@v3
         id: release
