@@ -14,14 +14,14 @@ yarn add @chainsafe/mina-signer-wasm
 ## Initialization
 ##### for NodeJs
 ```js
-import { Client } from "mina-singer-wasm";
+import { Client } from "@chainsafe/mina-signer-wasm";
 
 const client = new Client({ network: "testnet" });
 ```
 
 ##### for Web
 ```js
-import init, { Client } from "mina-singer-wasm";
+import init, { Client } from "@chainsafe/mina-signer-wasm";
 
 await init();
 const client = new Client({ network: "testnet" });
