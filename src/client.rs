@@ -10,7 +10,7 @@ use std::io::Write;
 
 #[wasm_bindgen(typescript_custom_section)]
 const CLIENT_OPTIONS: &'static str = r#"
-interface ClientOptions {
+export interface ClientOptions {
     network: "mainnet" | "testnet";
 }
 "#;

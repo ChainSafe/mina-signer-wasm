@@ -6,7 +6,7 @@ use num_traits::identities::One;
 
 #[wasm_bindgen(typescript_custom_section)]
 const STAKE_DELEGATION: &'static str = r#"
-interface StakeDelegation {
+export interface StakeDelegation {
     to: PublicKey;
     from: PublicKey;
     fee: UInt64;

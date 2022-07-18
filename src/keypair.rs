@@ -5,11 +5,11 @@ use mina_signer::PubKey;
 
 #[wasm_bindgen(typescript_custom_section)]
 const KEYPAIR: &'static str = r#"
-type PublicKey = string;
+export type PublicKey = string;
 
-type PrivateKey = string;
+export type PrivateKey = string;
 
-interface Keypair {
+export interface Keypair {
     privateKey: PrivateKey;
     publicKey: PublicKey;
 }
