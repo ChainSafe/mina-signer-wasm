@@ -4,11 +4,11 @@
 ##### with npm
 
 ```bash
-npm i mina-singer-wasm
+npm i @chainsafe/mina-signer-wasm
 ```
 ##### with yarn
 ```bash
-yarn add mina-singer-wasm
+yarn add @chainsafe/mina-signer-wasm
 ```
 
 ## Initialization

@@ -5,7 +5,7 @@ use mina_signer::NetworkId;
 
 #[wasm_bindgen(typescript_custom_section)]
 const MESSAGE: &'static str = r#"
-interface Message {
+export interface Message {
     publicKey: PublicKey;
     message: string;
 }

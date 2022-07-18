@@ -6,9 +6,9 @@ use wasm_bindgen::JsError;
 
 #[wasm_bindgen(typescript_custom_section)]
 const UNITS: &'static str = r#"
-type UInt32 = number | bigint | string;
+export type UInt32 = number | bigint | string;
 
-type UInt64 = number | bigint | string;
+export type UInt64 = number | bigint | string;
 "#;
 
 pub(crate) fn map_js_err<T: Display>(err: T) -> JsError {

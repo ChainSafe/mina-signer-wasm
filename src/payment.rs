@@ -6,7 +6,7 @@ use num_traits::identities::One;
 
 #[wasm_bindgen(typescript_custom_section)]
 const PAYMENT: &'static str = r#"
-interface Payment {
+export interface Payment {
     to: PublicKey;
     from: PublicKey;
     fee: UInt64;

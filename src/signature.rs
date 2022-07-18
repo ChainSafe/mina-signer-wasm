@@ -5,12 +5,12 @@ use num_traits::Num;
 
 #[wasm_bindgen(typescript_custom_section)]
 const SIGNATURE: &'static str = r#"
-interface Signature {
+export interface Signature {
     field: string;
     scalar: string;
 }
 
-interface Signed<SignableData> {
+export interface Signed<SignableData> {
     signature: Signature;
     data: SignableData;
 }
