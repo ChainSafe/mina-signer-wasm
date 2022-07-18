@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/ChainSafe/mina-signer-wasm/compare/root-v1.0.2...root-v1.0.3) (2022-07-18)
+
+
+### Bug Fixes
+
+* typescript types ([#13](https://github.com/ChainSafe/mina-signer-wasm/issues/13)) ([0209cf3](https://github.com/ChainSafe/mina-signer-wasm/commit/0209cf34e289fc7f4575a2d426a257504cabbdd1))
+
 ## [1.0.2](https://github.com/ChainSafe/mina-signer-wasm/compare/root-v1.0.1...root-v1.0.2) (2022-07-13)
 
 
