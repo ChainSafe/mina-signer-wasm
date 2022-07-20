@@ -20,7 +20,7 @@
     "buffer": "^6.0.3",
     "parcel": "^2.6.2",
     "postcss": "^8.4.14",
-    "postcss-html": "^1.4.1",
+    "postcss-html": "^1.5.0",
     "rimraf": "^3.0.2",
     "rome": "next",
     "sass": "^1.53.0",

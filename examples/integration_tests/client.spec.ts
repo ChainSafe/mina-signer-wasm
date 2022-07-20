@@ -1,6 +1,5 @@
-const ClientJs = require("mina-signer");
-const wasm = require("./pkg/mina_signer_wasm");
-const ClientWasm = wasm.Client;
+import ClientJs from "mina-signer";
+import { Client as ClientWasm } from "./pkg/mina_signer_wasm";
 
 const clientJs = new ClientJs({ network: "mainnet" });
 const clientWasm = new ClientWasm({ network: "mainnet" });
