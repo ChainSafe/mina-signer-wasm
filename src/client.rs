@@ -31,6 +31,12 @@ pub struct Client {
     ptr: *const ClientImpl,
 }
 
+impl Drop for Client {
+    fn drop(&mut self) {
+        self.free()
+    }
+}
+
 impl Client {
     fn client(&self) -> &ClientImpl {
         unsafe { &*self.ptr }
